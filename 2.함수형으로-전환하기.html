@@ -122,7 +122,50 @@
 
 
         // 3. each 만들기
-            // 1. 
+        // 1. 
+
+
+        // 여기서 내장된 map과 filter는 모두 Array 객체에 포함된 '메서드'이다.
+        // 객체 지향
+        console.log(
+            [1, 2, 3, 4].map((val) => {
+                return val * 2
+            })
+        )
+
+        console.log(
+            [1, 2, 3, 4].filter((val) => {
+                return val % 2
+            })
+        )
+
+        // 2. 외부 다형성(_map, _filter, _each와 같은 고차 함수의 구현에 따라 확보)
+        // 1. array like, arguments, document.querySelectorAll
+
+        // 오류
+        // 유사 배열(array like)에는 map메소드가 내장되어 있지 않으므로.
+        // console.log(
+        //     document.querySelectorAll('*').map((node) => {
+        //         return node.nodeName
+        //     })
+        // )
+
+        // 우리의 _map함수는 높은 다형성 확보
+        console.log(
+            _map(document.querySelectorAll('*'), (node) => {
+                return node.nodeName
+            })
+        )
+
+        // 또한 함수형 프로그래밍은 객체 지향과 다르게 데이터가 있어야 메소드가 존재하는 것이 아닌(data.method~) 함수가 그 이전에 먼저 존재하기 때문에 평가시점이 비교적 자유롭다.
+
+
+        // 3. 내부 다형성
+        // 1. predi, iter, mapper가 확보.
+
+        _map([1, 2, 3, 4], (v) => { // 콜백 함수라기 보다 보조 함수의 기능에 따라 이름을 붙여 다르게 불러주는게 좋다. 지금의 경우는 mapper 함수
+            return v + 10   //  숫자니까 더할거라던지.
+        })
     </script>
 </body>
 
