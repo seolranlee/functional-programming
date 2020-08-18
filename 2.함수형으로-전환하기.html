@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="kr">
+<html lang="ko">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>함수형으로 전환하기</title>
+    <script src="./js/_.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -54,28 +55,6 @@
             ages.push(temp_users[i].age)
         }
         console.log('ages: ', ages)
-
-
-        // 2. _filter, _map으로 리팩토링
-        function _filter(lists, predi) {
-            var new_list = []
-            for (var i = 0; i < lists.length; i++) {
-                // 함수형 프로그래밍에서는 추상화의 단위가 객체나 메서드가 아니라 함수가 된다. => 어떤 조건일 때 if문 안에 들어오게 될 것인가를 predi  함수에 완전히 위임한다.
-                if (predi(lists[i])) {
-                    new_list.push(lists[i])
-                }
-            }
-            return new_list
-        }
-
-        // _map함수를 보면 데이터 형이 어떻게 생겼는지 보이지 않는다.(다형성이 높다.)
-        function _map(lists, mapper) {
-            var new_list = []
-            for (var i = 0; i < lists.length; i++) {
-                new_list.push(mapper(lists[i]))
-            }
-            return new_list
-        }
 
         // 여기서 _filter와 같은 함수를 "응용형 함수라고 한다."(혹은 고차함수)
         // 함수가 함수를 받아서 원하는 시점에 평가하면서 해당하는 함수 안에서 알고 있는 특정한 인자를 적용해 나가며 로직을 완성하는 프로그래밍.
