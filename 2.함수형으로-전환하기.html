@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="kr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>함수형으로 전환하기</title>
+</head>
+
+<body>
+
+    <script>
+        var users = [
+            { id: 1, name: 'ID', age: 36 },
+            { id: 2, name: 'BJ', age: 32 },
+            { id: 3, name: 'JM', age: 32 },
+            { id: 4, name: 'PJ', age: 27 },
+            { id: 5, name: 'HA', age: 25 },
+            { id: 6, name: 'JE', age: 26 },
+            { id: 7, name: 'JI', age: 31 },
+            { id: 8, name: 'MP', age: 23 }
+        ]
+
+        // 1. 명령형 코드
+        // 1. 30세 이상인 users를 거른다.
+        var temp_users = []
+        for (var i = 0; i < users.length; i++) {
+            if (users[i].age >= 30) {
+                temp_users.push(users[i])
+            }
+        }
+        console.log('temp_users: ', temp_users)
+
+        // 2. 30세 이상인 users의 ages를 수집한다.
+
+        var names = []
+        for (var i = 0; i < temp_users.length; i++) {
+            names.push(temp_users[i].name)
+        }
+        console.log('names: ', names)
+
+        // 3. 30세 미만인 users를 거른다.
+        var temp_users = []
+        for (var i = 0; i < users.length; i++) {
+            if (users[i].age < 30) {
+                temp_users.push(users[i])
+            }
+        }
+        console.log('temp_users: ', temp_users)
+        // 4. 30세 미만인 users의 ages를 수집한다.
+
+        var ages = []
+        for (var i = 0; i < temp_users.length; i++) {
+            ages.push(temp_users[i].age)
+        }
+        console.log('ages: ', ages)
+
+
+        // 2. _filter, _map으로 리팩토링
+        function _filter(lists, predi) {
+            var new_list = []
+            for (var i = 0; i < lists.length; i++) {
+                // 함수형 프로그래밍에서는 추상화의 단위가 객체나 메서드가 아니라 함수가 된다. => 어떤 조건일 때 if문 안에 들어오게 될 것인가를 predi  함수에 완전히 위임한다.
+                if (predi(lists[i])) {
+                    new_list.push(lists[i])
+                }
+            }
+            return new_list
+        }
+
+        // _map함수를 보면 데이터 형이 어떻게 생겼는지 보이지 않는다.(다형성이 높다.)
+        function _map(lists, mapper) {
+            var new_list = []
+            for (var i = 0; i < lists.length; i++) {
+                new_list.push(mapper(lists[i]))
+            }
+            return new_list
+        }
+
+        // 여기서 _filter와 같은 함수를 "응용형 함수라고 한다."(혹은 고차함수)
+        // 함수가 함수를 받아서 원하는 시점에 평가하면서 해당하는 함수 안에서 알고 있는 특정한 인자를 적용해 나가며 로직을 완성하는 프로그래밍.
+        // 응용형 프로그래밍, 적용형 프로그래밍.
+
+        // 고차함수
+        // 1. 함수를 인자로 받거나
+        // 2. 함수를 리턴
+        // 3. 함수안에서 인자로 받은 함수를 실행
+
+        var over_30 = _filter(users, function (user) {
+            return user.age >= 30
+        })
+
+        console.log('over_30: ', over_30)
+
+        var over_30_names = _map(over_30, function (user) {
+            return user.name
+        })
+
+        console.log('over_30_names: ', over_30_names)
+
+        var under_30 = _filter(users, function (user) {
+            return user.age < 30
+        })
+
+        console.log('under_30: ', under_30)
+
+        var under_30_ages = _map(under_30, function (user) {
+            return user.age
+        })
+
+        console.log('under_30_ages: ', under_30_ages)
+
+
+
+
+        // 사실 함수형 프로그래밍에서는 대입문을 잘 사용하지 않는 경향을 띈다.
+        // 원래 값을 만들어 놓고 문장을 내려가면서 변형하는게 아니라
+        // 함수를 통과해 나가면서 한번에 값을 새롭게 만들어나가는 프로그래밍.
+        // 대입문과 대입문 사이에 변형을 일으킬 소지가 적어진다.
+
+        console.log('over_30_names',
+            _map(
+                _filter(users, function (user) {
+                    return user.age >= 30
+                }), function (user) {
+                    return user.name
+                })
+        )
+
+        console.log('under_30_ages',
+            _map(
+                _filter(users, function (user) {
+                    return user.age < 30
+                }), function (user) {
+                    return user.age
+                })
+        )
+
+
+        // console.log(_filter([1, 2, 3, 4], function (num) { return num % 2 }))
+        // console.log(_filter([1, 2, 3, 4], function (num) { return !(num % 2) }))
+        // console.log(_map([1, 2, 3], function (num) { return num * 2 }))
+
+
+        // 3. each 만들기
+            // 1. 
+    </script>
+</body>
+
+</html>
