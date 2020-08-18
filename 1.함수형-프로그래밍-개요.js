@@ -94,3 +94,37 @@ console.log( f3(function() { return 20 }) )
 // * 함수형 프로그래밍 *
 // 1. 언제 평가해도 상관 없는 순수 함수들을 만들고,
 // 2. 그 순수 함수들을 값으로 들고 다니면서 필요한 시점(적절한 시점)마다 평가를 하면서 다양한 로직을 만들어 나가는 것
+
+
+// add_maker(유명한 함수형 프로그래밍 예제)
+// 일급함수 + 클로저라는 개념이 함께 사용된 예제
+
+function add_maker(a) { // 함수를 리턴하는 함수
+    return function(b) {    // 클로저   // a라는 값을 기억. // 또 순수함수이기도 하다.  // a라는 값을 "참조"만 할 뿐 "변경"하고 있지 않으므로.
+        return a + b
+    }
+}
+
+var add10 = add_maker(10)   // add10이라는 변수에 함수가 들어감.
+
+console.log(add10(20))    // 30
+
+var add5 = add_maker(5)
+var add15 = add_maker(15)
+
+console.log(add5(10))   // 15
+console.log(add15(10))  // 25
+
+
+// 함수형 프로그래밍이 실제로 어떻게 전개되는지
+function f4(f1, f2, f3) {   // f1, f2, f3 모두 순수 함수들. 이 순수 함수들을 인자로 받고 조합하여 원하는 평가방법/평가시점/로직 등을 만들어 나가는게 함수형 프로그래밍. 
+    return f3(f1() + f2()) 
+}
+
+console.log(
+    f4(
+        function() { return 2 },
+        function() { return 1 },
+        function(a) { return a * a }
+    )
+)
