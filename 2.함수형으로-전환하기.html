@@ -167,28 +167,6 @@
             return v + 10   //  숫자니까 더할거라던지.(내부 데이터 형에 대한 이해)
         })
 
-
-        // 3. 커링
-        // 1. _curry, _curryr(오른쪽에서부터 인자를 적용해 나가는 curryr) (함수를 값으로 들고 있다가 원하는 시점까지 미뤄뒀다가 최종적으로 평가하는 기법)
-        function _curry(fn) {
-            return function (a, b) {
-                // 인자가 2개 들어오면 한번에 즉시 평가.
-                // 인자가 하나만 들어오면 안쪽에 함수를 리턴해서 한번 더 평가시점을 미루는 형식.
-                return arguments.length == 2 ? fn(a, b) : function (b) { return fn(a, b) }
-            }
-        }
-
-        // 인자를 맨 오른쪽에서부터 적용해 나간다.
-        function _curryr(fn) {
-            return function (a, b) {
-                return arguments.length == 2 ? fn(a, b) : function (b) { return fn(b, a) } // 인자를 맨 오른쪽에서부터 적용해 나간다.
-            }
-        }
-
-        // 커리함수
-        // 인자로 본체 함수를 받고
-        // 커리 함수를 실행하면 즉시 함수를 리턴
-
         var add = _curry(function (a, b) {
             return a + b
         })
@@ -231,11 +209,7 @@
         console.log(sub10(5))   // 표현에 맞게.
 
 
-        // 2. _get 만들어 좀 더 간단하게 하기
-        // object에 있는 값을 안전하게 참조 
-        var _get = _curryr(function (obj, key) {
-            return obj == null ? undefined : obj[key]
-        })
+
         var user1 = users[0]
 
         console.log(user1.name)
@@ -273,6 +247,45 @@
 
         console.log(_get('name')({ name: 'seolran', age: 31 }))
         console.log(_get('age')({ name: 'seolran', age: 31 }))
+
+        // 4. _reduce 만들기
+        var slice = Array.prototype.slice
+        function _rest(list, num) {
+            return slice.call(list, num || 1)
+        }
+        function _reduce(list, iter, memo) {    // memo: 시작 값
+            // return iter(iter(iter(0, 1), 2), 3)
+            if (arguments.length == 2) {
+                memo = list[0]
+                // slice는 Array의 "메소드"이기 때문에 _reduce함수는 Array의 의존적인 함수가 되버린다.
+                list = _rest(list)
+            }
+            _each(list, function (val) {
+                memo = iter(memo, val)
+            })
+            return memo
+        }
+
+        console.log(
+            _reduce([1, 2, 3], add, 0)
+        )   // 6
+
+        // 동작원리
+        // memo = add(0, 1)
+        // memo = add(memo, 2)
+        // memo = add(memo, 3)
+        // return memo
+
+        // add(add(add0, 1), 2), 3)
+
+        // reduce함수는 들어온 데이터를 축약된 형태로 return하기 위해 사용한다.
+        // ex) array로 들어오지만 리듀스를 거쳐 숫자로 나오는
+
+
+        console.log(
+            _reduce([1, 2, 3], add) // 3번째 인자 생략
+        )   // 6
+
     </script>
 </body>
 
