@@ -49,3 +49,42 @@ function _each(list, iter) {  // 해당 i번째 값을 순회하는 함수
     }
     return list
 }
+
+
+// 4. _reduce 만들기
+// slice는 Array의 "메소드"이기 때문에 Array의 메소드로서의 slice를 바로 사용하게 되면 Array의 의존적인 함수가 되버린다.
+// 이를 피하기 위해 Array.prototype.slice을 별도의 변수에 담아두고, 이를 call하여 사용한다. 
+var slice = Array.prototype.slice
+function _rest(list, num) {
+    return slice.call(list, num || 1)
+}
+function _reduce(list, iter, memo) {    // memo: 시작 값
+    // return iter(iter(iter(0, 1), 2), 3)
+    if (arguments.length == 2) {
+        memo = list[0]
+        list = _rest(list)
+    }
+    _each(list, function (val) {
+        memo = iter(memo, val)
+    })
+    return memo
+}
+
+// 5. 파이프 라인 만들기
+// 1. _pipe: 함수들을 인자로 받아 연속 실행한 후 리턴. 파이프 함수가 추상화 된 버전이 reduce.
+function _pipe() {
+    var fns = arguments
+    return function (arg) {
+        return _reduce(fns, function (arg, fn) {
+            return fn(arg)
+        }, arg)
+    }
+}
+
+function _go(arg) {
+    var fns = _rest(arguments)
+    return _pipe.apply(null, fns)(arg)
+}
+
+var _map = _curryr(_map), 
+    _filter = _curryr(_filter)
