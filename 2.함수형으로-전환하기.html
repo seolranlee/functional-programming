@@ -164,8 +164,115 @@
         // 1. predi, iter, mapper가 확보.
 
         _map([1, 2, 3, 4], (v) => { // 콜백 함수라기 보다 보조 함수의 기능에 따라 이름을 붙여 다르게 불러주는게 좋다. 지금의 경우는 mapper 함수
-            return v + 10   //  숫자니까 더할거라던지.
+            return v + 10   //  숫자니까 더할거라던지.(내부 데이터 형에 대한 이해)
         })
+
+
+        // 3. 커링
+        // 1. _curry, _curryr(오른쪽에서부터 인자를 적용해 나가는 curryr) (함수를 값으로 들고 있다가 원하는 시점까지 미뤄뒀다가 최종적으로 평가하는 기법)
+        function _curry(fn) {
+            return function (a, b) {
+                // 인자가 2개 들어오면 한번에 즉시 평가.
+                // 인자가 하나만 들어오면 안쪽에 함수를 리턴해서 한번 더 평가시점을 미루는 형식.
+                return arguments.length == 2 ? fn(a, b) : function (b) { return fn(a, b) }
+            }
+        }
+
+        // 인자를 맨 오른쪽에서부터 적용해 나간다.
+        function _curryr(fn) {
+            return function (a, b) {
+                return arguments.length == 2 ? fn(a, b) : function (b) { return fn(b, a) } // 인자를 맨 오른쪽에서부터 적용해 나간다.
+            }
+        }
+
+        // 커리함수
+        // 인자로 본체 함수를 받고
+        // 커리 함수를 실행하면 즉시 함수를 리턴
+
+        var add = _curry(function (a, b) {
+            return a + b
+        })
+
+        var add10 = add(10)
+        var add5 = add(5)
+
+
+        // add = function (a) {
+        //     return function (b) {
+        //         return function (a, b) {
+        //             return a + b
+        //         }
+        //     }
+        // }
+
+        // add10 = function (b) {
+        //     return function (10, b) {
+        //         return 10 + b
+        //     }
+        // }
+
+        // add10(5) = function (10, 5) {
+        //     return 10 + 5
+        // }
+
+        console.log(add10(5))   // 15
+        console.log(add(5)(3))  // 8
+        console.log(add5(3))    // 8
+        console.log(add(10)(3)) // 13
+        console.log(add(1, 2))  // 3    // 인자 두개면 함수 본체 즉시 실행
+
+        var sub = _curryr(function (a, b) {
+            return a - b
+        })
+
+        console.log(sub(10, 5))
+
+        var sub10 = sub(10)
+        console.log(sub10(5))   // 표현에 맞게.
+
+
+        // 2. _get 만들어 좀 더 간단하게 하기
+        // object에 있는 값을 안전하게 참조 
+        var _get = _curryr(function (obj, key) {
+            return obj == null ? undefined : obj[key]
+        })
+        var user1 = users[0]
+
+        console.log(user1.name)
+        console.log(_get(user1, 'name'))
+        console.log(_get('name')(user1))
+
+        var get_name = _get('name') // 이름을 꺼내는 함수가 된다.
+        console.log(get_name(users[3])) // _curryr 함수를 이용해 다른 유저의 이름도 꺼내올 수 있는 함수가 된다.
+
+        // console.log(users[10].name)  // console err
+        // console.log(_get(users[10], 'name'))    // undefined
+
+
+        console.log('over_30_names',
+            _map(
+                _filter(users, function (user) {
+                    return user.age >= 30
+                }), function (user) {
+                    return user.name
+                })
+        )
+
+
+        console.log('over_30_names',
+            _map(
+                _filter(users, function (user) { return user.age >= 30 }),
+                _get('name'))
+        )
+
+        console.log('under_30_ages',
+            _map(
+                _filter(users, function (user) { return user.age < 30 }),
+                _get('age'))
+        )
+
+        console.log(_get('name')({ name: 'seolran', age: 31 }))
+        console.log(_get('age')({ name: 'seolran', age: 31 }))
     </script>
 </body>
 
