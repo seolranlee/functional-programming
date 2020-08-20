@@ -263,13 +263,13 @@
             _map(
                 _filter(users, function (user) { return user.age >= 30 }),
                 _get('name'))
-        )
+        )   // mapper 함수를 간결히 표현하게 됨.
 
         console.log('under_30_ages',
             _map(
                 _filter(users, function (user) { return user.age < 30 }),
                 _get('age'))
-        )
+        )   // mapper 함수를 간결히 표현하게 됨.
 
         console.log(_get('name')({ name: 'seolran', age: 31 }))
         console.log(_get('age')({ name: 'seolran', age: 31 }))
