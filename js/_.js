@@ -49,21 +49,3 @@ function _each(list, iter) {  // 해당 i번째 값을 순회하는 함수
     }
     return list
 }
-
-// 4. _reduce 만들기
-var slice = Array.prototype.slice
-function _rest(list, num) {
-    return slice.call(list, num || 1)
-}
-function _reduce(list, iter, memo) {    // memo: 시작 값
-    // return iter(iter(iter(0, 1), 2), 3)
-    if (arguments.length == 2) {
-        memo = list[0]
-        // slice는 Array의 "메소드"이기 때문에 _reduce함수는 Array의 의존적인 함수가 되버린다.
-        list = _rest(list)
-    }
-    _each(list, function (val) {
-        memo = iter(memo, val)
-    })
-    return memo
-}
