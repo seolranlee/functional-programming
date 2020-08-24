@@ -335,6 +335,85 @@
             console.log
         )
 
+        // 6. _each 의 외부 다형성 높이기
+        // 1. _each에 null 넣어도 에러 안나게
+        _each(null, console.log)
+        console.log(_map(null, (v) => { return v }))    // _map은 _each를 사용하고 있어서
+        console.log(_filter(null, (v) => { return v })) // _filter는 _each를 사용하고 있어서
+
+        // 함수형 프로그래밍: 언제 어디서나 예외적인 데이터(undefined, null이나 잘못된 값)가 들어와도 다형성을 높여서 그럴싸한 값을 return하여 흘려 보낼 수 있는 전략을 취한다.(에러가 나지 않고 연속적인 함수 실행에 무리가 없도록.)
+        // 이러한 기법은 underscore.js에도 동일하게 구현 되어있다.
+        // try, catch를 잘 하지 않는다.
+        // 형 체크를 단단하게 하지 않는다고 불안한 기법은 아니다.
+        // 데이터를 다루는 라이브러리들(backbone, nodeJS, 시퀄라이즈, ORM등) 마저도 코어에서는 이런식으로 데이터를 다룬다.
+        _go(null,
+            _filter((v) => { return v % 2 }),
+            _map((v) => { return v * v }),
+            console.log
+        )
+
+        // 2. _keys 만들기
+        // Object.keys를 조금 더 안전하게 만든 함수
+        console.log(Object.keys({ name: 'ID', age: 33 }))   // object의 key만 뽑아준다.
+        console.log(Object.keys([1, 2, 3, 4]))
+        console.log(Object.keys(10))
+        // console.log(Object.keys(null))  // error
+
+        console.log(_keys(null))    // error가 나지 않는다.
+
+        // 4. _each 외부 다형성 높이기
+        _each({
+            13: 'ID',
+            19: 'HD',
+            29: 'YD',
+        }, (name) => {
+            console.log(name)
+        })
+
+        console.log(
+            _map({
+                13: 'ID',
+                19: 'HD',
+                29: 'YD',
+            }, (name) => {
+                return name.toLowerCase()
+            })
+        )
+
+        _go(
+            {
+                1: users[0],
+                3: users[2],
+                5: users[4],
+            },
+            _map((user) => {
+                return user.name
+            }),
+            console.log
+        )
+
+        _go(
+            users,
+            _map((user) => { return user.name }),
+            _map(
+                (name) => {
+                    return name.toLowerCase()
+                }
+            ),
+            console.log
+        )
+
+        _go(
+            null,   // null이 떨어져도 흘러간다.
+            _map((user) => { return user.name }),
+            _map(
+                (name) => {
+                    return name.toLowerCase()
+                }
+            ),
+            console.log
+        )
+
 
     </script>
 </body>

@@ -43,9 +43,28 @@ function _map(list, mapper) {
     return new_list
 }
 
+
+function _is_object(obj) {
+    // var obj = { name: 'name' }
+    // obj = { name: 'name' }
+    // !obj = false
+    // !!obj = true
+    return typeof obj == 'object' && !!obj;
+    // return typeof obj == 'object' && obj;    // 똑같이 기능
+}
+
+function _keys(obj) {
+    return _is_object(obj) ? Object.keys(obj) : []
+}
+
+
+var _length = _get('length')
+
 function _each(list, iter) {  // 해당 i번째 값을 순회하는 함수
-    for (var i = 0; i < list.length; i++) {
-        iter(list[i])   // for문을 돌면서 안에서 하는 일을 완전히 위임
+    var keys = _keys(list)
+
+    for (var i = 0, len = keys.length; i < len; i++) {
+        iter(list[keys[i]])   // for문을 돌면서 안에서 하는 일을 완전히 위임
     }
     return list
 }
