@@ -56,6 +56,35 @@
 
         console.log(_pluck(users, 'age'))    // [36, 32, 32, 27, 25, 26, 31, 23, 13]
 
+        // 2. 거르기 - filter(true로 평가된 값들을 꺼낸다)
+
+        console.log(
+            _filter(users, (user) => { return user.age > 30 })
+        )
+
+        // 1. reject(true로 평가된 값들을 제외시킨다)
+
+        function _negate(func) {
+            return function (val) {
+                return !func(val)
+            }
+        }
+
+        function _reject(data, predi) {
+            return _filter(data, _negate(predi))    // 함수 중첩만 남음: 이것이 함수형 프로그래밍
+        }
+
+        console.log(
+            _reject(users, (user) => { return user.age > 30 })  // 30세 초과인 사람들을 제외시키는
+        )
+
+        // 2. compact(trudy한 값만 남김)
+
+        var _compact = _filter(_identity)
+
+        console.log(
+            _compact([1, 2, 0, false, null, {}])    //  [1, 2, {…}]
+        )
 
     </script>
 </body>
