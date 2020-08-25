@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3. 컬렉션 중심 프로그래밍</title>
+    <script src='./js/_.js' type='text/javascript'></script>
+</head>
+
+<body>
+
+    <script>
+        // 컬렉션 중심 프로그래밍의 4가지 유형과 함수
+        // 컬렉션 중심 프로그래밍 - 배열 등과 같이 돌림직한 데이터들을 다루는 것을 말한다
+
+        // 1. 수집하기 - map(대표함수, 추상화 레벨 높음), values, pluck(특화함수) 등
+        // 2. 거르기 - filter(대표함수, 추상화 레벨 높음), reject, compact, without(특화함수) 등
+        // 3. 찾아내기 - find(대표함수, 추상화 레벨 높음), some, every(특화함수) 등
+        // 4. 접기(축약) - reduce(대표함수, 추상화 레벨 높음), min, amx, group_by, count_by(특화함수)
+
+        // 추상화 레벨이 높다 > 다른 특화 함수들을 만들 수 있다.
+
+        var users = [
+            { id: 10, name: 'ID', age: 36 },
+            { id: 20, name: 'BJ', age: 32 },
+            { id: 30, name: 'JM', age: 32 },
+            { id: 40, name: 'PJ', age: 27 },
+            { id: 50, name: 'HA', age: 25 },
+            { id: 60, name: 'JE', age: 26 },
+            { id: 70, name: 'JI', age: 31 },
+            { id: 80, name: 'MP', age: 23 },
+            { id: 90, name: 'FP', age: 13 }
+        ]
+
+        // 컬렉션 중심 프로그래밍의 유형별 함수 만들기
+        // 1. 수집하기 - map
+        console.log(
+            _map(users, (user) => { return user.name })
+        )
+
+        // 1. values(key-value 쌍으로 되어 있는 data에 value를 꺼내는 함수)
+        console.log(users[0])   // {id: 10, name: "ID", age: 36}
+        console.log(_keys(users[0]))   // ["id", "name", "age"]
+        console.log(_values(users[0]))   // [10, "ID", 36]
+
+        console.log(_map(_identity)(users[0]))  // 커링을 통해 평가순서를 뒤집는다
+
+
+        // 2. pluck
+        // 키를 통해 얻어진 값들을 수집하는 함수
+        function _pluck(data, key) {
+            return _map(data, _get(key))
+
+        }
+
+        console.log(_pluck(users, 'age'))    // [36, 32, 32, 27, 25, 26, 31, 23, 13]
+
+
+    </script>
+</body>
+
+</html>

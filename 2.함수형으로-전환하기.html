@@ -395,6 +395,7 @@
         _go(
             users,
             _map((user) => { return user.name }),
+            _filter((name) => { return name !== 'BJ' }),
             _map(
                 (name) => {
                     return name.toLowerCase()
@@ -406,6 +407,7 @@
         _go(
             null,   // null이 떨어져도 흘러간다.
             _map((user) => { return user.name }),
+            _filter((name) => { return name !== 'BJ' }),
             _map(
                 (name) => {
                     return name.toLowerCase()

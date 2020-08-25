@@ -107,3 +107,10 @@ function _go(arg) {
 
 var _map = _curryr(_map), 
     _filter = _curryr(_filter)
+
+
+var _values = _map(_identity)
+
+function _identity(val) {
+    return val
+}
