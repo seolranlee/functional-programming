@@ -57,33 +57,122 @@
         console.log(_pluck(users, 'age'))    // [36, 32, 32, 27, 25, 26, 31, 23, 13]
 
         // 2. 거르기 - filter(true로 평가된 값들을 꺼낸다)
-
         console.log(
             _filter(users, (user) => { return user.age > 30 })
         )
 
         // 1. reject(true로 평가된 값들을 제외시킨다)
-
-        function _negate(func) {
-            return function (val) {
-                return !func(val)
-            }
-        }
-
-        function _reject(data, predi) {
-            return _filter(data, _negate(predi))    // 함수 중첩만 남음: 이것이 함수형 프로그래밍
-        }
-
         console.log(
             _reject(users, (user) => { return user.age > 30 })  // 30세 초과인 사람들을 제외시키는
         )
 
         // 2. compact(trudy한 값만 남김)
-
-        var _compact = _filter(_identity)
-
         console.log(
             _compact([1, 2, 0, false, null, {}])    //  [1, 2, {…}]
+        )
+
+        // 3. 찾아내기 - find
+        // 1. find(리스트 안에서 조건에 맞는 값을 처음 만났을 때 그 값을 리턴) 만들기
+
+        // 커리 동작 전
+        // function _find(list, predi) {  // 해당 i번째 값을 순회하는 함수
+        //     var keys = _keys(list)
+        //     for (var i = 0, len = keys.length; i < len; i++) {
+        //         var val = list[keys[i]]
+        //         if (predi(val)) return val
+        //     }
+        // }
+
+        // 커리가 동작하게 변환
+        // var _find = _curryr((list, predi) => {  // 해당 i번째 값을 순회하는 함수
+        //     var keys = _keys(list)
+        //     for (var i = 0, len = keys.length; i < len; i++) {
+        //         var val = list[keys[i]]
+        //         if (predi(val)) return val
+        //     }
+        // })
+
+
+        console.log(
+            _get(
+                _find(users, (user) => {
+                    return user.id === 50
+                }), 'name'
+            )
+        )
+
+        // _find 함수 curryr적용 후 파이프라인을 통과 할 수 있음
+        _go(users,
+            _find((user) => {
+                return user.id == 50
+            }),
+            _get('name'),
+            console.log
+        )
+        // 2. find_index(리스트 안에서 조건에 맞는 값을 처음 만났을 때 그 값의 index를 리턴)
+        console.log(
+            _find_index(users, (user) => {
+                return user.id === 50
+            })
+        )
+
+        // _find_index 함수 curryr적용 후 파이프라인을 통과 할 수 있음
+        _go(
+            users,
+            _find_index((user) => {
+                return user.id === 50
+            }),
+            console.log
+        )
+
+        // 3. some(조건에 만족하는 값이 하나라도 있으면 true를 리턴)
+
+        console.log(_some([1, 2, 5, 10, 20], (val) => {
+            return val > 10 // true
+        }))
+
+        console.log(_some([1, 2, 5, 10, 20], (val) => {
+            return val > 20 // false
+        }))
+
+        // 4. every(조건에 모든 값이 만족해야 true를 리턴)
+        console.log(_every([1, 2, 5, 10, 20], (val) => {
+            return val > 10 // false
+        }))
+
+        console.log(_every([1, 2, 5, 10, 20], (val) => {
+            return val > 0 // true
+        }))
+
+        console.log(
+            _some([1, 2, 0, 10])    // true
+        )
+
+        console.log(
+            _some([null, false, 0]) // false
+        )
+
+
+        console.log(
+            _every([1, 2, 0, 10])    // false
+        )
+
+        console.log(
+            _every([null, false, 0]) // false
+        )
+
+        console.log(
+            _every([null, false, 1]) // false
+        )
+
+        console.log(
+            _every([1, 2, 10])    // true
+        )
+
+        console.log(
+            _some(users, (user) => {
+                return user.age < 20    // 20대 미만의 유저가 있는가?
+            })
         )
 
     </script>

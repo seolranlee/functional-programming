@@ -114,3 +114,40 @@ var _values = _map(_identity)
 function _identity(val) {
     return val
 }
+
+function _negate(func) {
+    return function (val) {
+        return !func(val)
+    }
+}
+
+function _reject(data, predi) {
+    return _filter(data, _negate(predi))    // 함수 중첩만 남음: 이것이 함수형 프로그래밍
+}
+
+var _compact = _filter(_identity)
+
+var _find = _curryr((list, predi) => {  // 해당 i번째 값을 순회하는 함수
+    var keys = _keys(list)
+    for (var i = 0, len = keys.length; i < len; i++) {
+        var val = list[keys[i]]
+        if (predi(val)) return val
+    }
+})
+
+var _find_index = _curryr((list, predi) => {  // 해당 i번째 값을 순회하는 함수
+    var keys = _keys(list)
+    for (var i = 0, len = keys.length; i < len; i++) {
+        if (predi(list[keys[i]])) return i
+    }
+
+    return -1   // 찾는 조건에 맞는 값이 없을 때 -1이 리턴
+})
+
+function _some(data, predi) {
+    return _find_index(data, predi || _identity) != -1
+}
+
+function _every(data, predi) {
+    return _find_index(data, _negate(predi || _identity)) == -1    // _negate(predi)   // predi를 반대로 평가
+}
