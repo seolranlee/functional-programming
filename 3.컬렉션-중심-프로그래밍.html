@@ -184,26 +184,6 @@
 
         // 1. min, amx, min_by, max_by
         // 모든 값을 확인한 후 특정 하나의 값으로 접어내는 함수
-        function _min(data) {
-            // 꼭 앞에서부터(1,2 순으로) 하나씩 들어올거라고 생각하고 프로그래밍 하지말고
-            // 순서와 상관없이 나는 한가지 로직만 작성한다.
-            // reduce를 for문을 대체한다는 식으로 프로그래밍 해서는 안된다.
-            return _reduce(data, (a, b) => {
-                return a < b ? a : b
-            })
-
-        }
-
-        function _max(data) {
-            // 꼭 앞에서부터(1,2 순으로) 하나씩 들어올거라고 생각하고 프로그래밍 하지말고
-            // 순서와 상관없이 나는 한가지 로직만 작성한다.
-            // reduce를 for문을 대체한다는 식으로 프로그래밍 해서는 안된다.
-            return _reduce(data, (a, b) => {
-                return a > b ? a : b
-            })
-
-        }
-
         console.log(
             _min([1, 2, 4, 10, 5, -4])  // -4
         )
@@ -211,21 +191,6 @@
         console.log(
             _max([1, 2, 4, 10, 5, -4])  // 10
         )
-
-        function _min_by(data, iter) {
-            return _reduce(data, (a, b) => {
-                return iter(a) < iter(b) ? a : b
-            })
-        }
-
-        function _max_by(data, iter) {
-            return _reduce(data, (a, b) => {
-                return iter(a) > iter(b) ? a : b
-            })
-        }
-
-        var _min_by = _curryr(_min_by)
-        var _max_by = _curryr(_max_by)
 
         console.log(
             _min_by([1, 2, 4, 10, 5, -4], Math.abs) // 1
@@ -262,6 +227,45 @@
             _get('name'),
             console.log
         )
+
+        // 2. group_by, push
+        console.clear()
+
+        _go(
+            users,
+            _group_by(_get('age')),
+            console.log
+        )
+
+        _go(
+            users,
+            _group_by((user) => {
+                return user.age - user.age % 10 // ex) 36 - 36 % 10(나머지=6)
+            }),
+            console.log
+        )
+
+        _go(
+            users,
+            _group_by((user) => {
+                return user.name[0]
+            }),
+            console.log
+        )
+
+        _go(
+            users,
+            _group_by(_pipe(_get('name'), _head)),
+            console.log
+        )
+
+        // 3. count_by, inc
+        console.log(
+            _count_by(users, (user) => {
+                return user.age - user.age % 10
+            })
+        )
+
     </script>
 </body>
 
