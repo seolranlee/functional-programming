@@ -155,3 +155,67 @@ function _some(data, predi) {
 function _every(data, predi) {
     return _find_index(data, _negate(predi || _identity)) == -1    // _negate(predi)   // predi를 반대로 평가
 }
+
+function _min(data) {
+    // 꼭 앞에서부터(1,2 순으로) 하나씩 들어올거라고 생각하고 프로그래밍 하지말고
+    // 순서와 상관없이 나는 한가지 로직만 작성한다.
+    // reduce를 for문을 대체한다는 식으로 프로그래밍 해서는 안된다.
+    return _reduce(data, (a, b) => {
+        return a < b ? a : b
+    })
+
+}
+
+function _max(data) {
+    // 꼭 앞에서부터(1,2 순으로) 하나씩 들어올거라고 생각하고 프로그래밍 하지말고
+    // 순서와 상관없이 나는 한가지 로직만 작성한다.
+    // reduce를 for문을 대체한다는 식으로 프로그래밍 해서는 안된다.
+    return _reduce(data, (a, b) => {
+        return a > b ? a : b
+    })
+
+}
+
+function _min_by(data, iter) {
+    return _reduce(data, (a, b) => {
+        return iter(a) < iter(b) ? a : b
+    })
+}
+
+function _max_by(data, iter) {
+    return _reduce(data, (a, b) => {
+        return iter(a) > iter(b) ? a : b
+    })
+}
+
+var _min_by = _curryr(_min_by)
+var _max_by = _curryr(_max_by)
+
+// 안정성을 높여서 push를 하는 일
+function _push(obj, key, val) {
+    (obj[key] = obj[key] || []).push(val);
+    return obj;
+}
+
+var _group_by = _curryr((data, iter) => {
+    return _reduce(data, (grouped, val) => {
+        return _push(grouped, iter(val), val)
+        // var key = iter(val);
+        // (grouped[key] = grouped[key] || []).push(val)
+        // return grouped
+    }, {})
+})
+
+var _head = (list) => {
+    return list[0]
+}
+
+var _inc = (count, key) => {
+    count[key] ? count[key]++ : count[key] = 1
+    return count
+}
+var _count_by = _curryr((data, iter) => {
+    return _reduce(data, (count, val) => {
+        return _inc(count, iter(val))
+    }, {})
+})
