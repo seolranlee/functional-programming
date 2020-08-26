@@ -125,6 +125,10 @@ function _reject(data, predi) {
     return _filter(data, _negate(predi))    // 함수 중첩만 남음: 이것이 함수형 프로그래밍
 }
 
+var _reject = _curryr((data, predi) => {
+    return _filter(data, _negate(predi)) 
+})
+
 var _compact = _filter(_identity)
 
 var _find = _curryr((list, predi) => {  // 해당 i번째 값을 순회하는 함수

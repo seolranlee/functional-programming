@@ -178,6 +178,90 @@
             })
         )
 
+        // 4. 접기(축약하기) - reduce(머지를 위해서도, 집계를 위해서도, 새로운 값을 위해서도 사용)
+        // reduce는 순차적인 for문을 대체하는 식으로만 사용되는 함수는 아님
+        // 순수함수로써, 평가순서와는 상관 없이 접어나가는 함수로써 이해
+
+        // 1. min, amx, min_by, max_by
+        // 모든 값을 확인한 후 특정 하나의 값으로 접어내는 함수
+        function _min(data) {
+            // 꼭 앞에서부터(1,2 순으로) 하나씩 들어올거라고 생각하고 프로그래밍 하지말고
+            // 순서와 상관없이 나는 한가지 로직만 작성한다.
+            // reduce를 for문을 대체한다는 식으로 프로그래밍 해서는 안된다.
+            return _reduce(data, (a, b) => {
+                return a < b ? a : b
+            })
+
+        }
+
+        function _max(data) {
+            // 꼭 앞에서부터(1,2 순으로) 하나씩 들어올거라고 생각하고 프로그래밍 하지말고
+            // 순서와 상관없이 나는 한가지 로직만 작성한다.
+            // reduce를 for문을 대체한다는 식으로 프로그래밍 해서는 안된다.
+            return _reduce(data, (a, b) => {
+                return a > b ? a : b
+            })
+
+        }
+
+        console.log(
+            _min([1, 2, 4, 10, 5, -4])  // -4
+        )
+
+        console.log(
+            _max([1, 2, 4, 10, 5, -4])  // 10
+        )
+
+        function _min_by(data, iter) {
+            return _reduce(data, (a, b) => {
+                return iter(a) < iter(b) ? a : b
+            })
+        }
+
+        function _max_by(data, iter) {
+            return _reduce(data, (a, b) => {
+                return iter(a) > iter(b) ? a : b
+            })
+        }
+
+        var _min_by = _curryr(_min_by)
+        var _max_by = _curryr(_max_by)
+
+        console.log(
+            _min_by([1, 2, 4, 10, 5, -4], Math.abs) // 1
+        )
+
+        console.log(
+            _max_by([1, 2, 4, 10, 5, -11], Math.abs) // -11
+        )
+
+        console.log(
+            _max(
+                _map([1, 2, 4, 10, 5, -11], Math.abs)   // -11이 아니라 11이 나옴
+            )
+        )
+
+        console.log(
+            _min_by(users, (user) => {
+                return user.age
+            })
+        )
+
+        _go(
+            users,
+            _filter(user => user.age >= 30),
+            _map(_get('age')),
+            _min,
+            console.log
+        )
+
+        _go(
+            users,
+            _reject(user => user.age >= 30),
+            _max_by(_get('age')),   // age가 아니라 user자체가 return되므로 _get('name')을 쓸 수 있다.
+            _get('name'),
+            console.log
+        )
     </script>
 </body>
 
