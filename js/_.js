@@ -26,23 +26,6 @@ var _get = _curryr(function (obj, key) {
 })
 
 // 2. _filter, _map으로 리팩토링
-function _filter(list, predi) {
-    var new_list = []
-    _each(list, function(val) {
-        if (predi(val)) new_list.push(val)
-    })
-    return new_list
-}
-
-// _map함수를 보면 데이터 형이 어떻게 생겼는지 보이지 않는다.(다형성이 높다.)
-function _map(list, mapper) {
-    var new_list = []
-    _each(list, function(val) {
-        new_list.push(mapper(val))
-    })
-    return new_list
-}
-
 
 function _is_object(obj) {
     // var obj = { name: 'name' }
@@ -64,11 +47,27 @@ function _each(list, iter) {  // 해당 i번째 값을 순회하는 함수
     var keys = _keys(list)
 
     for (var i = 0, len = keys.length; i < len; i++) {
-        iter(list[keys[i]])   // for문을 돌면서 안에서 하는 일을 완전히 위임
+        iter(list[keys[i]], keys[i])   // for문을 돌면서 안에서 하는 일을 완전히 위임
     }
     return list
 }
 
+function _filter(list, predi) {
+    var new_list = []
+    _each(list, function(val) {
+        if (predi(val)) new_list.push(val)
+    })
+    return new_list
+}
+
+// _map함수를 보면 데이터 형이 어떻게 생겼는지 보이지 않는다.(다형성이 높다.)
+function _map(list, mapper) {
+    var new_list = []
+    _each(list, (val, key) =>{
+        new_list.push(mapper(val, key))
+    })
+    return new_list
+}
 
 // 4. _reduce 만들기
 // slice는 Array의 "메소드"이기 때문에 Array의 메소드로서의 slice를 바로 사용하게 되면 Array의 의존적인 함수가 되버린다.
@@ -219,3 +218,5 @@ var _count_by = _curryr((data, iter) => {
         return _inc(count, iter(val))
     }, {})
 })
+
+var _pairs = _map((val, key) => [key, val])
